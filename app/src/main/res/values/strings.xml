@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">TodoList</string>
+    <string name="crossImage">crossImage</string>
+    <string name="addTask">Añadir tarea</string>
+    <string name="appTitle">Mis Tareas"</string>
 </resources>
