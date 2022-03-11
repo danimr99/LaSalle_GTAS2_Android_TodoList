@@ -3,4 +3,7 @@
     <string name="crossImage">crossImage</string>
     <string name="addTask">Añadir tarea</string>
     <string name="appTitle">Mis Tareas"</string>
+    <string name="create_task_input">Título de la tarea</string>
+    <string name="button_save_task_label">Añadir</string>
+    <string name="button_cancel_label">Cancelar</string>
 </resources>

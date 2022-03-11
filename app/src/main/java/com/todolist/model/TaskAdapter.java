@@ -51,6 +51,7 @@ public class TaskAdapter  extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         final Task item = this.tasks.get(position);
 
         holder.checkBox.setChecked(item.isDone());
+        holder.title.setText(item.getTitle());
         holder.checkBox.setOnCheckedChangeListener((checkbox, value) -> {
             if(checkbox.isChecked()) {
                 // Strike through text
@@ -62,6 +63,12 @@ public class TaskAdapter  extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
             }
 
             item.setDone(value);
+        });
+
+        holder.crossImage.setOnClickListener(view -> {
+            this.tasks.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, this.tasks.size());
         });
     }
 
