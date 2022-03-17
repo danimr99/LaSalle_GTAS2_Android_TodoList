@@ -15,6 +15,10 @@ public class Task implements Serializable {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public boolean isDone() {
         return isDone;
     }

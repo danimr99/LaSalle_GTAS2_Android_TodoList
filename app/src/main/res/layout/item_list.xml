@@ -20,6 +20,14 @@
         android:layout_gravity="center"
         android:textSize="18sp"/>
     <ImageView
+        android:id="@+id/editImage"
+        android:src="@drawable/edit_icon"
+        android:layout_gravity="center"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_weight="1"
+        android:contentDescription="@string/editImage" />
+    <ImageView
         android:id="@+id/crossImage"
         android:src="@drawable/cross_icon"
         android:layout_gravity="center"
@@ -27,4 +35,5 @@
         android:layout_height="30dp"
         android:layout_weight="1"
         android:contentDescription="@string/crossImage" />
+
 </LinearLayout>

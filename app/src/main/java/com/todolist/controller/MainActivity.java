@@ -7,22 +7,15 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.InputType;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.todolist.R;
 import com.todolist.model.Task;
 import com.todolist.model.TaskAdapter;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -47,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Get elements from MainActivity
         this.fab = findViewById(R.id.fab);
-        this.fab.setOnClickListener(view -> this.showCreateTaskDialog(view));
+        this.fab.setOnClickListener(view -> this.showCreateTaskDialog());
 
         this.tasks = findViewById(R.id.tasksRecyclerView);
         this.layoutManager = new LinearLayoutManager(this);
@@ -57,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         this.tasks.setAdapter(this.adapter);
     }
 
-    private void showCreateTaskDialog(View view) {
+    private void showCreateTaskDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.create_task_input);
 
