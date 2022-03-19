@@ -1,8 +1,6 @@
 package com.todolist.model;
 
-import java.io.Serializable;
-
-public class Task implements Serializable {
+public class Task {
     private String title;
     private boolean isDone;
 
