@@ -56,6 +56,11 @@ public class TaskAdapter  extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
         holder.checkBox.setChecked(item.isDone());
         holder.title.setText(item.getTitle());
+
+        if(item.isDone()) {
+            holder.title.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+        }
+
         holder.checkBox.setOnCheckedChangeListener((checkbox, value) -> {
             if(checkbox.isChecked()) {
                 // Strike through text
