@@ -9,19 +9,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import android.util.Log;
 import android.widget.EditText;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.todolist.R;
 import com.todolist.commons.Constants;
 import com.todolist.model.Task;
 import com.todolist.model.TaskAdapter;
 
-import java.util.LinkedList;
-import java.util.List;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
     private FloatingActionButton fab;
@@ -30,27 +32,31 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private SharedPreferences sharedPreferences;
 
-    private List<Task> tasksList = new LinkedList<Task>() {{
-        add(new Task("Sacar el perro"));
-        add(new Task("Comprar el pan"));
-        add(new Task("Revisar el correo de La Salle"));
-        add(new Task("Preparar reuniones del día"));
-        add(new Task("Hacer ejercicio"));
-    }};
+    private ArrayList<Task> tasksList = new ArrayList<>(Arrays.asList(
+            new Task("Sacar el perro"),
+            new Task("Comprar el pan"),
+            new Task("Revisar el correo de La Salle"),
+            new Task("Preparar reuniones del día"),
+            new Task("Hacer ejercicio")
+    ));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Check if exists a saved list of tasks
+        // Set up SharedPreferences
         this.sharedPreferences = getSharedPreferences(Constants.TODO_LIST_PREFERENCES,
                 MODE_PRIVATE);
 
-        if(!this.sharedPreferences.getString(Constants.TASKS_KEY, "").isEmpty()){
+        // Check if exists a saved list of tasks
+        if(!this.sharedPreferences.getString(Constants.TASKS_KEY, "").isEmpty() ){
             String json = this.sharedPreferences.getString(Constants.TASKS_KEY, "");
+            Type listType = new TypeToken<ArrayList<Task>>(){}.getType();
 
-            Log.i("TodoList", "From SharedPreferences: " + json);
+            // Set recovered tasks list as the list of tasks to display
+            this.tasksList.clear();
+            this.tasksList = new Gson().fromJson(json, listType);
         }
 
         // Get elements from MainActivity
@@ -94,14 +100,10 @@ public class MainActivity extends AppCompatActivity {
 
         // Convert tasks list to JSON string
         String json = new Gson().toJson(this.tasksList);
-        //String json = "HOLA";
 
         // Save tasks list to SharedPreferences
         editor.remove(Constants.TASKS_KEY);
         editor.putString(Constants.TASKS_KEY, json);
         editor.apply();
-
-        Log.i("TodoList", "JSON: " + json);
-        Log.i("TodoList", "Number of tasks: " + this.tasksList.size());
     }
 }

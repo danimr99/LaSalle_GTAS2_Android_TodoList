@@ -15,10 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.todolist.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TaskAdapter  extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
-    private List<Task> tasks;
+    private ArrayList<Task> tasks;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView title;
@@ -36,7 +37,7 @@ public class TaskAdapter  extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         }
     }
 
-    public TaskAdapter(List<Task> tasks) {
+    public TaskAdapter(ArrayList<Task> tasks) {
         this.tasks = tasks;
     }
 
