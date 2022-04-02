@@ -14,12 +14,13 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.todolist.R;
+import com.todolist.api.TodoAPI;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TaskAdapter  extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
-    private ArrayList<Task> tasks;
+    private ArrayList<TodoAPI> tasks;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView title;
@@ -37,7 +38,7 @@ public class TaskAdapter  extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
         }
     }
 
-    public TaskAdapter(ArrayList<Task> tasks) {
+    public TaskAdapter(ArrayList<TodoAPI> tasks) {
         this.tasks = tasks;
     }
 
@@ -52,12 +53,12 @@ public class TaskAdapter  extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull TaskAdapter.ViewHolder holder, int position) {
-        final Task item = this.tasks.get(position);
+        final TodoAPI item = this.tasks.get(position);
 
-        holder.checkBox.setChecked(item.isDone());
+        holder.checkBox.setChecked(item.isCompleted());
         holder.title.setText(item.getTitle());
 
-        if(item.isDone()) {
+        if(item.isCompleted()) {
             holder.title.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
         }
 
@@ -71,7 +72,7 @@ public class TaskAdapter  extends RecyclerView.Adapter<TaskAdapter.ViewHolder> {
                         (~ Paint.STRIKE_THRU_TEXT_FLAG));
             }
 
-            item.setDone(value);
+            item.setCompleted(value);
         });
 
         holder.crossImage.setOnClickListener(view -> {

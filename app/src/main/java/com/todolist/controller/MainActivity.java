@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.widget.EditText;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -16,14 +17,18 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.todolist.R;
+import com.todolist.api.APIClient;
+import com.todolist.api.TodoAPI;
 import com.todolist.commons.Constants;
-import com.todolist.model.Task;
 import com.todolist.model.TaskAdapter;
-
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     private FloatingActionButton fab;
@@ -31,32 +36,27 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private SharedPreferences sharedPreferences;
+    private APIClient apiClient;
 
-    private ArrayList<Task> tasksList = new ArrayList<>(Arrays.asList(
-            new Task("Sacar el perro"),
-            new Task("Comprar el pan"),
-            new Task("Revisar el correo de La Salle"),
-            new Task("Preparar reuniones del día"),
-            new Task("Hacer ejercicio")
-    ));
+    private ArrayList<TodoAPI> tasksList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Set up singleton APIClient to access the TodoAPI
+        this.apiClient = APIClient.getInstance();
+
         // Set up SharedPreferences
         this.sharedPreferences = getSharedPreferences(Constants.TODO_LIST_PREFERENCES,
                 MODE_PRIVATE);
 
         // Check if exists a saved list of tasks
-        if(!this.sharedPreferences.getString(Constants.TASKS_KEY, "").isEmpty() ){
-            String json = this.sharedPreferences.getString(Constants.TASKS_KEY, "");
-            Type listType = new TypeToken<ArrayList<Task>>(){}.getType();
-
-            // Set recovered tasks list as the list of tasks to display
-            this.tasksList.clear();
-            this.tasksList = new Gson().fromJson(json, listType);
+        if(!this.sharedPreferences.getString(Constants.TASKS_KEY, "").isEmpty()){
+            this.getTodosFromSharedPreferences();
+        } else {
+            this.getTodosFromAPI();
         }
 
         // Get elements from MainActivity
@@ -82,13 +82,40 @@ public class MainActivity extends AppCompatActivity {
         // Set up the buttons
         builder.setPositiveButton(R.string.button_save_task_label, (dialog, which) -> {
             if(!input.getText().toString().isEmpty()) {
-                this.tasksList.add(new Task(input.getText().toString()));
+                this.tasksList.add(new TodoAPI(input.getText().toString()));
             }
         });
 
         builder.setNegativeButton(R.string.button_cancel_label, (dialog, which) -> dialog.cancel());
 
         builder.show();
+    }
+
+    private void getTodosFromSharedPreferences() {
+        String json = this.sharedPreferences.getString(Constants.TASKS_KEY, "");
+        Type listType = new TypeToken<ArrayList<TodoAPI>>(){}.getType();
+
+        // Set recovered tasks list as the list of tasks to display
+        this.tasksList.clear();
+        this.tasksList = new Gson().fromJson(json, listType);
+    }
+
+    private void getTodosFromAPI() {
+        // Get TODOs from API
+        this.apiClient.getTodos(new Callback<List<TodoAPI>>() {
+            @Override
+            public void onResponse(Call<List<TodoAPI>> call, Response<List<TodoAPI>> response) {
+                if(response.body() != null) {
+                    tasksList.addAll(response.body());
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<TodoAPI>> call, Throwable t) {
+                Log.e(Constants.TODO_LIST_PREFERENCES, "ERROR: Cannot get TODOs from the API");
+            }
+        });
     }
 
     @Override
