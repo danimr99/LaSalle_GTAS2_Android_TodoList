@@ -38,11 +38,11 @@ public class APIClient {
         this.service.addTodo(todo).enqueue(callback);
     }
 
-    public void updateTodo() {
-
+    public void updateTodo(TodoAPI todo, Callback<TodoAPI> callback) {
+        this.service.updateTodo(todo.getId(), todo).enqueue(callback);
     }
 
-    public void deleteTodo() {
-
+    public void deleteTodo(TodoAPI todo, Callback<TodoAPI> callback) {
+        this.service.deleteTodo(todo.getId()).enqueue(callback);
     }
 }

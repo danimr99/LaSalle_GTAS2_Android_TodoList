@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         this.layoutManager = new LinearLayoutManager(this);
         this.tasks.setLayoutManager(layoutManager);
 
-        this.adapter = new TaskAdapter(this.tasksList);
+        this.adapter = new TaskAdapter(this.tasksList, this.apiClient);
         this.tasks.setAdapter(this.adapter);
     }
 
