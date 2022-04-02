@@ -11,6 +11,7 @@ import android.os.Bundle;
 
 import android.util.Log;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
                 MODE_PRIVATE);
 
         // Check if exists a saved list of tasks
-        if(!this.sharedPreferences.getString(Constants.TASKS_KEY, "").isEmpty()){
+        if (!this.sharedPreferences.getString(Constants.TASKS_KEY, "").isEmpty()) {
             this.getTodosFromSharedPreferences();
         } else {
             this.getTodosFromAPI();
@@ -81,8 +82,22 @@ public class MainActivity extends AppCompatActivity {
 
         // Set up the buttons
         builder.setPositiveButton(R.string.button_save_task_label, (dialog, which) -> {
-            if(!input.getText().toString().isEmpty()) {
-                this.tasksList.add(new TodoAPI(input.getText().toString()));
+            if (!input.getText().toString().isEmpty()) {
+                TodoAPI todo = new TodoAPI(input.getText().toString());
+                this.tasksList.add(todo);
+                this.apiClient.addTodo(todo, new Callback<TodoAPI>() {
+                            @Override
+                            public void onResponse(Call<TodoAPI> call, Response<TodoAPI> response) {
+                                Toast.makeText(getApplicationContext(), "Todo added to API",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onFailure(Call<TodoAPI> call, Throwable t) {
+                                Toast.makeText(getApplicationContext(), "ERROR: Cannot add TODO to the API",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
             }
         });
 
@@ -93,7 +108,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void getTodosFromSharedPreferences() {
         String json = this.sharedPreferences.getString(Constants.TASKS_KEY, "");
-        Type listType = new TypeToken<ArrayList<TodoAPI>>(){}.getType();
+        Type listType = new TypeToken<ArrayList<TodoAPI>>() {
+        }.getType();
 
         // Set recovered tasks list as the list of tasks to display
         this.tasksList.clear();
@@ -105,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         this.apiClient.getTodos(new Callback<List<TodoAPI>>() {
             @Override
             public void onResponse(Call<List<TodoAPI>> call, Response<List<TodoAPI>> response) {
-                if(response.body() != null) {
+                if (response.body() != null) {
                     tasksList.addAll(response.body());
                     adapter.notifyDataSetChanged();
                 }
@@ -113,7 +129,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<TodoAPI>> call, Throwable t) {
-                Log.e(Constants.TODO_LIST_PREFERENCES, "ERROR: Cannot get TODOs from the API");
+                Toast.makeText(getApplicationContext(), "ERROR: Cannot get TODOs from the API",
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }

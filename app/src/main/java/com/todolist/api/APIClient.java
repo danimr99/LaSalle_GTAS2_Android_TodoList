@@ -34,8 +34,8 @@ public class APIClient {
         this.service.getTodos().enqueue(callback);
     }
 
-    public void addTodo() {
-
+    public void addTodo(TodoAPI todo, Callback<TodoAPI> callback) {
+        this.service.addTodo(todo).enqueue(callback);
     }
 
     public void updateTodo() {
